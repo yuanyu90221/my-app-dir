@@ -24,4 +24,6 @@ router.get('/reverse/:name', (req, res) => {
   // res.json(req.params);
   res.send(reverse);
 })
+
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
 module.exports = router;
