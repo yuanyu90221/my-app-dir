@@ -26,4 +26,7 @@ router.get('/reverse/:name', (req, res) => {
 })
 
 router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
+
+router.get('/tags', catchErrors(storeController.getStoreByTag))
+router.get('/tags/:tag', catchErrors(storeController.getStoreByTag))
 module.exports = router;
