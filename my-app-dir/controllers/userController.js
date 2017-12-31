@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-
+const User = mongoose.model('User') // because we had require in the start.js
+const promisify = require('es6-promisify')
 exports.loginForm = (req, res) => {
     res.render('login', { title: 'Login'})
 }
@@ -19,7 +20,7 @@ exports.validateRegister = (req, res, next) => {
     })
     req.checkBody('password', 'Password Cannot be Blank!').notEmpty()
     req.checkBody('password-confirm', 'Confirmed Password cannot be Blank!').notEmpty()
-    req.checkBody('password=confirm', 'Oops! Your passwords do not match').equals(req.body.password)
+    req.checkBody('password-confirm', 'Oops! Your passwords do not match').equals(req.body.password)
 
     const errors = req.validationErrors()
     if (errors) {
@@ -28,4 +29,12 @@ exports.validateRegister = (req, res, next) => {
         return; // stop the function from running
     }
     next() // there were no errors
+}
+
+exports.register = async (req, res, next) => {
+    const user = new User({email: req.body.email, name: req.body.name})
+    // this register function is provided by passport-local-mongoose library
+    const register = promisify(User.register, User)
+    await register(user, req.body.password)
+    next() // pass to authController.login
 }
